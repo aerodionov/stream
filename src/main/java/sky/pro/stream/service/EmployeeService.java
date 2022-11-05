@@ -17,7 +17,7 @@ public class EmployeeService {
 
     public void addEmployee(String name, String surName, float salary, Integer department) {
         Employee employee = new Employee(name, surName, salary, department);
-        if (employees.stream().filter(p -> p.equals(employee)).findAny().orElse(null) == null) {
+        if (employees.contains(employee)) {
             throw new EmployeeAlreadyAddedException("сотрудник уже добавлен");
         } else {
             employees.add(employee);
@@ -33,7 +33,7 @@ public class EmployeeService {
         final Optional<Employee> employee = employees.stream()
                 .filter(p -> p.getDepartment() == department)
                 .min(Comparator.comparingDouble(Employee::getSalary));
-        return employee.orElseThrow();
+        return employee.orElseThrow(() -> new EmployeeNotFoundException("В " + department + " отделе нет сотрудников"));
     }
 
     //Получить в качестве параметра номер отдела (1–5) и найти сотрудника с максимальной зарплатой
@@ -44,7 +44,7 @@ public class EmployeeService {
         final Optional<Employee> employee = employees.stream()
                 .filter(p -> p.getDepartment() == department)
                 .max(Comparator.comparingDouble(Employee::getSalary));
-        return employee.orElseThrow();
+        return employee.orElseThrow(() -> new EmployeeNotFoundException("В " + department + " отделе нет сотрудников"));
     }
 
     //Получить в качестве параметра номер отдела (1–5) и возвращать всех сотрудников по отделу.
