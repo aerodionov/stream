@@ -1,8 +1,12 @@
 package sky.pro.stream.service;
 
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import sky.pro.stream.Employee;
 import sky.pro.stream.exception.EmployeeAlreadyAddedException;
+import sky.pro.stream.exception.EmployeeIncorrectInputData;
 import sky.pro.stream.exception.EmployeeNotFoundException;
 
 import java.util.ArrayList;
@@ -15,13 +19,27 @@ import java.util.stream.Collectors;
 public class EmployeeService {
     private static final List<Employee> employees = new ArrayList<>();
 
-    public void addEmployee(String name, String surName, float salary, Integer department) {
+    public static Employee addEmployee(String name, String surName, Float salary, Integer department) {
+
+        if (StringUtils.isBlank(name)
+                | StringUtils.isBlank(surName)
+                | salary == null
+                | department == null
+                | !(StringUtils.isAlpha(name))
+                | !(StringUtils.isAlpha(surName))) {
+
+            throw new EmployeeIncorrectInputData();
+        }
+
+        name = StringUtils.capitalize(name.toLowerCase());
+        surName = StringUtils.capitalize(surName.toLowerCase());
+
         Employee employee = new Employee(name, surName, salary, department);
         if (employees.contains(employee)) {
             throw new EmployeeAlreadyAddedException("сотрудник уже добавлен");
         } else {
             employees.add(employee);
-            //return employee;
+            return employee;
         }
     }
 
@@ -65,9 +83,5 @@ public class EmployeeService {
         }
         return employee;
     }
-
-
-
-
 
 }
