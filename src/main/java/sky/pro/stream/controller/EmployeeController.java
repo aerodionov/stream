@@ -20,14 +20,13 @@ public class EmployeeController {
     }
 
     @GetMapping("/add")
-    public String add(@RequestParam(name = "name") String name,
+    public Employee add(@RequestParam(name = "name") String name,
                       @RequestParam(name = "surName") String surName,
-                      @RequestParam(name = "salary") float salary,
+                      @RequestParam(name = "salary") Float salary,
                       @RequestParam(name = "department") Integer department) {
-        employeeService.addEmployee(name, surName, salary, department);
-        return "Сотрудник" + name + " " + surName + " " + salary + " " + department + " добавлен";
+        Employee employee = employeeService.addEmployee(name, surName, salary, department);
+        return employee;
     }
-
     @GetMapping("/min-salary")
     public String minSalary(@RequestParam(name = "departmentId") Integer departmentId) {
         Employee employee = EmployeeService.minSalaryDepartment(departmentId);
